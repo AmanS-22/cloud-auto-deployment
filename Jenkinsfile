@@ -17,19 +17,23 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh '''
-                cd /var/lib/jenkins/workspace/cloud-auto-deploy
+stage('Deploy') {
+    steps {
+        sh '''
+        echo "Stopping old Flask server..."
+        pkill -f "python3 app.py" || true
 
-                echo "Stopping old app..."
-                pkill -f app.py || true
-                sleep 2
+        echo "Removing old deployment..."
+        rm -rf ~/flask-app
 
-                echo "Starting new app..."
-                nohup python3 app.py > app.log 2>&1 &
-                '''
-            }
-        }
+        echo "Copying new code..."
+        cp -r * ~/flask-app
+
+        echo "Starting new Flask server..."
+        cd ~/flask-app
+        nohup python3 app.py > app.log 2>&1 &
+        '''
+    }
+}
     }
 }
