@@ -5,7 +5,7 @@ pipeline {
 
         stage('Clone') {
             steps {
-                git 'https://github.com/AmanS-22/cloud-auto-deployment.git'
+                git branch: 'main', url: 'https://github.com/AmanS-22/cloud-auto-deployment.git'
             }
         }
 
