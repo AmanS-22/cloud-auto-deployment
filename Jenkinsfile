@@ -25,9 +25,10 @@ pipeline {
             steps {
                 sh '''
                 pkill -f app.py || true
-                nohup python3 app.py &
+                sleep 2
+                nohup python3 app.py > app.log 2>&1 &
                 '''
-            }
+                }
         }
     }
 }
