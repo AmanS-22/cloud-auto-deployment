@@ -21,14 +21,18 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh '''
-                pkill -f app.py || true
-                sleep 2
-                nohup python3 app.py > app.log 2>&1 &
-                '''
-                }
-        }
+stage('Deploy') {
+    steps {
+        sh '''
+        cd /var/lib/jenkins/workspace/cloud-auto-deploy
+
+        echo "Stopping old app if running..."
+        pkill -f app.py || true
+
+        echo "Starting new app..."
+        nohup python3 app.py > app.log 2>&1 &
+        '''
+    }
+}
     }
 }
