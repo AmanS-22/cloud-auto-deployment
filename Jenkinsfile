@@ -3,7 +3,7 @@ pipeline {
 
     stages {
 
-        stage('Clone') {
+        stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/AmanS-22/cloud-auto-deployment.git'
             }
@@ -11,28 +11,25 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'echo Building application'
+                sh '''
+                pip3 install flask --break-system-packages
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Deploy') {
             steps {
-                sh 'echo Running tests'
+                sh '''
+                cd /var/lib/jenkins/workspace/cloud-auto-deploy
+
+                echo "Stopping old app..."
+                pkill -f app.py || true
+                sleep 2
+
+                echo "Starting new app..."
+                nohup python3 app.py > app.log 2>&1 &
+                '''
             }
         }
-
-stage('Deploy') {
-    steps {
-        sh '''
-        cd /var/lib/jenkins/workspace/cloud-auto-deploy
-
-        echo "Stopping old app if running..."
-        pkill -f app.py || true
-
-        echo "Starting new app..."
-        nohup python3 app.py > app.log 2>&1 &
-        '''
-    }
-}
     }
 }
