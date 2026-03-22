@@ -20,19 +20,21 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                echo "Stopping old Flask server..."
+                echo "Stopping old app..."
                 pkill -f "python3 app.py" || true
-        
-                echo "Preparing deployment folder..."
-                rm -rf ~/flask-app
-                mkdir -p ~/flask-app
-        
-                echo "Copying new code..."
-                cp -r * ~/flask-app
-        
-                echo "Starting new Flask server..."
-                cd ~/flask-app
+
+                echo "Preparing deployment directory..."
+                rm -rf /var/lib/jenkins/flask-app
+                mkdir -p /var/lib/jenkins/flask-app
+
+                echo "Copying latest code..."
+                cp -r $WORKSPACE/* /var/lib/jenkins/flask-app/
+
+                echo "Starting app..."
+                cd /var/lib/jenkins/flask-app
                 nohup python3 app.py > app.log 2>&1 &
+
+                echo "Deployment done!"
                 '''
             }
         }
